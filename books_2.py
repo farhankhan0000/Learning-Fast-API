@@ -50,11 +50,11 @@ BOOKS = [Book(1, "Computer Science Pro", "codingwithfarhan", "A very nice Book",
          Book(5, "HP2", "Author 2", "Book Description", 3, 2027),
          Book(6, "HP3", "Author 3", "Book Description", 1, 2026)]
 
-@app.get("/books")
+@app.get("/books", status_code=status.HTTP_200_OK)
 async def get_books():
     return BOOKS
 
-@app.get("/books/{book_id}")
+@app.get("/books/{book_id}", status_code=status.HTTP_200_OK)
 async def read_book(book_id: int = Path(gt=0)):
     for book in BOOKS:
         if book.id == book_id:
@@ -64,7 +64,7 @@ async def read_book(book_id: int = Path(gt=0)):
     
 
         
-@app.get("/books/")
+@app.get("/books/", status_code=status.HTTP_200_OK)
 async def read_book_by_rating(book_rating: int= Query(gt= 0, lt= 6)):
     books_to_return = []
     for book in BOOKS:
@@ -73,7 +73,7 @@ async def read_book_by_rating(book_rating: int= Query(gt= 0, lt= 6)):
 
     return books_to_return
 
-@app.get("/books/publish/")
+@app.get("/books/publish/", status_code=status.HTTP_200_OK)
 async def read_books_by_publish_date(published_date: int= Query(gt= 1999, lt= 2031)):
     books_to_return = []
     for book in BOOKS:
@@ -84,7 +84,7 @@ async def read_books_by_publish_date(published_date: int= Query(gt= 1999, lt= 20
 
 
 
-@app.post("/books")
+@app.post("/create-book", status_code=status.HTTP_201_CREATED)
 async def create_books(book_request: Bookrequest):
     # print(type(book_request))
     new_book = Book(**book_request.model_dump())
@@ -101,7 +101,7 @@ def find_book_id(book: Book):
 
     return book
 
-@app.put("/books/update_book")
+@app.put("/books/update_book", status_code=status.HTTP_204_NO_CONTENT)
 async def update_book(book: Bookrequest):
     book_changed = False
     for i in range(len(BOOKS)):
@@ -112,7 +112,7 @@ async def update_book(book: Bookrequest):
     if not book_changed:
         raise HTTPException(status_code= 404, detail='Item not found')
 
-@app.delete("/books/{book_id}")
+@app.delete("/books/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_book(book_id: int= Path(gt=0)):
     book_changed = False
     for i in range(len(BOOKS)):
